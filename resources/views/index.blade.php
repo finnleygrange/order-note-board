@@ -39,8 +39,13 @@
             </div>
 
             <ul class="list-group">
-                <li v-for="n in filteredNotes" class="list-group-item">
-                    Order: @{{n.order_number}} - @{{n.message}} (@{{n.author}})
+                <li v-for="n in filteredNotes" class="list-group-item d-flex justify-content-between align-items-center">
+                    <div>
+                        <strong>Order: @{{n.order_number}}</strong> - @{{n.message}} <span class="text-muted">(@{{n.author}})</span>
+                    </div>
+                    <small class="text-secondary text-end style-italic">
+                        Posted: @{{ new Date(n.created_at).toLocaleString() }}
+                    </small>
                 </li>
                 <li v-if="filteredNotes.length === 0" class="list-group-item text-muted text-center italic">
                     No notes match your search.

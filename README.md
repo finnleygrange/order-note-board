@@ -36,5 +36,5 @@ Ensure you have **PHP**, **Composer**, and **MySQL** installed.
    php artisan serve
    ```
 Once running, open your browser and navigate to:
-http://127.0.0.1:8000
+http://127.0.0.1:8001
    
