@@ -31,5 +31,35 @@
             </p>
         </div>
     </div>
+
+    <script>
+        Vue.createApp({
+            setup() {
+                const notes = Vue.ref([]);
+                const form = Vue.ref({});
+
+                const getNotes = () => {
+                    fetch('/api/notes')
+                        .then(res => res.json())
+                        .then(data => notes.value = data);
+                };
+
+                const save = () => {
+                    fetch('/api/notes', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(form.value)
+                    }).then(() => {
+                        form.value = {};
+                        getNotes();
+                    });
+                };
+
+                Vue.onMounted(getNotes);
+
+                return { notes, form, save };
+            }
+        }).mount('#app');
+    </script>
 </body>
 </html>
