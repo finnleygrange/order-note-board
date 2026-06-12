@@ -12,7 +12,7 @@ class NoteController extends Controller
      */
     public function index()
     {
-        return response()->json(Note::all(), 200);
+        return Note::all();
     }
 
     /**
@@ -20,15 +20,11 @@ class NoteController extends Controller
      */
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'order_number' => 'required|string',
-            'message'      => 'required|string',
-            'author'       => 'required|string',
-        ]); 
-
-        $note = Note::create($validated);
-
-        return response()->json($note, 201);
+        return Note::create($request->validate([
+        'order_number' => 'required|string',
+        'message'      => 'required|string',
+        'author'       => 'required|string',
+    ]));
     }
 
     /**
