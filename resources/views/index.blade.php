@@ -31,20 +31,32 @@
         </form>
 
         <div id="notes" class="pt-3 border-top">
-            <h3 class="h5 mb-3">Notes:</h3>
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h3 class="h5 m-0">Notes:</h3>
+                <div class="w-25">
+                    <input type="text" class="form-control form-control-sm" v-model="searchQuery" placeholder="Search notes...">
+                </div>
+            </div>
+
             <ul class="list-group">
-                <li v-for="n in notes" class="list-group-item">
+                <li v-for="n in filteredNotes" class="list-group-item">
                     Order: @{{n.order_number}} - @{{n.message}} (@{{n.author}})
+                </li>
+                <li v-if="filteredNotes.length === 0" class="list-group-item text-muted text-center italic">
+                    No notes match your search.
                 </li>
             </ul>
         </div>
     </div>
 
     <script>
-        Vue.createApp({
+        const { createApp, ref, onMounted, computed } = Vue;
+
+        createApp({
             setup() {
-                const notes = Vue.ref([]);
-                const form = Vue.ref({});
+                const notes = ref([]);
+                const form = ref({});
+                const searchQuery = ref(''); 
 
                 const getNotes = () => {
                     fetch('/api/notes')
@@ -63,9 +75,20 @@
                     });
                 };
 
-                Vue.onMounted(getNotes);
+                const filteredNotes = computed(() => {
+                    const query = searchQuery.value.toLowerCase().trim();
+                    if (!query) return notes.value;
 
-                return { notes, form, save };
+                    return notes.value.filter(n => {
+                        return n.order_number.toString().toLowerCase().includes(query) ||
+                               n.message.toLowerCase().includes(query) ||
+                               n.author.toLowerCase().includes(query);
+                    });
+                });
+
+                onMounted(getNotes);
+
+                return { notes, form, save, searchQuery, filteredNotes };
             }
         }).mount('#app');
     </script>
